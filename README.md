@@ -77,6 +77,10 @@ A production-ready daily morning prompt app that sends personalized love message
    MORNING_TIME=07:30
    GIRLFRIEND_SEND_TIME=08:30
 
+   # Channel preferences (comma-separated)
+   MY_CHANNELS=whatsapp,sms
+   GIRLFRIEND_CHANNELS=sms
+
    # Optional email config
    SMTP_HOST=smtp.sendgrid.net
    SMTP_PORT=587
@@ -171,16 +175,19 @@ TIMEZONE=America/New_York
 
 ### Configure Channels
 
-Edit `src/config/questions.ts` to set preferred channels:
+Set preferred channels via environment variables in `.env`:
 
-```typescript
-export const girlfriendProfile: UserProfile = {
-  name: 'Girlfriend',
-  phoneNumber: process.env.GIRLFRIEND_PHONE_NUMBER || '',
-  email: process.env.GIRLFRIEND_EMAIL || '',
-  preferredChannels: ['whatsapp', 'sms', 'email'],  // Pick any combination
-};
+```env
+MY_CHANNELS=whatsapp,sms           # Your preferred channels (comma-separated)
+GIRLFRIEND_CHANNELS=sms            # Girlfriend's preferred channels
 ```
+
+Available channels: `whatsapp`, `sms`, `email`
+
+Example combinations:
+- `whatsapp,sms` - Send via both WhatsApp and SMS
+- `sms` - SMS only
+- `whatsapp,sms,email` - All three channels
 
 ## Usage
 
@@ -381,6 +388,8 @@ Body=Answer text here
 | `TIMEZONE` | Yes | Timezone for scheduling | `America/New_York` |
 | `MORNING_TIME` | Yes | Daily prompt time (24h) | `07:30` |
 | `GIRLFRIEND_SEND_TIME` | No | Girlfriend message time (24h, default: 08:30) | `08:30` |
+| `MY_CHANNELS` | No | Your preferred channels (comma-separated, default: whatsapp,sms) | `whatsapp,sms` |
+| `GIRLFRIEND_CHANNELS` | No | Girlfriend's preferred channels (comma-separated, default: sms) | `sms` |
 | `SMTP_HOST` | No | SMTP server host | `smtp.sendgrid.net` |
 | `SMTP_PORT` | No | SMTP server port | `587` |
 | `SMTP_USER` | No | SMTP username | `apikey` |

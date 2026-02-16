@@ -27,6 +27,10 @@ interface Config {
     from: string;
     girlfriendEmail: string;
   };
+  channels: {
+    my: ('whatsapp' | 'sms' | 'email')[];
+    girlfriend: ('whatsapp' | 'sms' | 'email')[];
+  };
 }
 
 const requiredEnvVars = [
@@ -45,6 +49,12 @@ for (const envVar of requiredEnvVars) {
   if (!process.env[envVar]) {
     throw new Error(`Missing required environment variable: ${envVar}`);
   }
+}
+
+// Helper function to parse channel preferences
+function parseChannels(envVar: string | undefined, defaultValue: string): ('whatsapp' | 'sms' | 'email')[] {
+  const channelsStr = envVar || defaultValue;
+  return channelsStr.split(',').map(ch => ch.trim() as 'whatsapp' | 'sms' | 'email');
 }
 
 const config: Config = {
@@ -71,6 +81,10 @@ const config: Config = {
     pass: process.env.SMTP_PASS || '',
     from: process.env.EMAIL_FROM || '',
     girlfriendEmail: process.env.GIRLFRIEND_EMAIL || '',
+  },
+  channels: {
+    my: parseChannels(process.env.MY_CHANNELS, 'whatsapp,sms'),
+    girlfriend: parseChannels(process.env.GIRLFRIEND_CHANNELS, 'sms'),
   },
 };
 
