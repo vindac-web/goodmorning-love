@@ -1,4 +1,5 @@
 import config from './index';
+import { getQuestions } from '../services/dataStore';
 
 export interface Question {
   number: number;
@@ -12,7 +13,8 @@ export interface UserProfile {
   preferredChannels: ('whatsapp' | 'sms' | 'email')[];
 }
 
-export const morningQuestions: Question[] = [
+// Default questions (fallback if data file doesn't exist)
+const defaultQuestions: Question[] = [
   {
     number: 1,
     text: "What's one thing you love about her today?",
@@ -26,6 +28,9 @@ export const morningQuestions: Question[] = [
     text: 'What do you want to encourage her about today?',
   },
 ];
+
+// Load questions from data store (or use defaults)
+export const morningQuestions: Question[] = getQuestions(defaultQuestions);
 
 export const myProfile: UserProfile = {
   name: 'Me',

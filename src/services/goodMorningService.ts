@@ -3,6 +3,7 @@ import { sendToChannels } from './messaging';
 import { sendEmail } from './email';
 import { parseAnswers, AnswerSet } from '../utils/parseAnswers';
 import { createMessage } from '../utils/createMessage';
+import { addHistoryEntry } from './dataStore';
 
 // Store the last prompt timestamp to validate incoming replies
 let lastPromptTimestamp: Date | null = null;
@@ -19,8 +20,38 @@ export async function sendMorningQuestions(): Promise<void> {
 
   lastPromptTimestamp = new Date();
 
-  await sendToChannels(myProfile, fullMessage);
-  console.log('Morning questions sent to user');
+  try {
+    await sendToChannels(myProfile, fullMessage);
+    console.log('Morning questions sent to user');
+
+    // Log to history
+    for (const channel of myProfile.preferredChannels) {
+      if (channel !== 'email') {
+        addHistoryEntry({
+          timestamp: new Date().toISOString(),
+          type: 'question',
+          channel: channel as 'sms' | 'whatsapp',
+          status: 'sent',
+          message: fullMessage,
+        });
+      }
+    }
+  } catch (error) {
+    // Log failure to history
+    for (const channel of myProfile.preferredChannels) {
+      if (channel !== 'email') {
+        addHistoryEntry({
+          timestamp: new Date().toISOString(),
+          type: 'question',
+          channel: channel as 'sms' | 'whatsapp',
+          status: 'failed',
+          message: fullMessage,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
+      }
+    }
+    throw error;
+  }
 }
 
 export async function handleUserReply(from: string, body: string): Promise<void> {
@@ -59,19 +90,57 @@ export async function handleUserReply(from: string, body: string): Promise<void>
 export async function sendGirlfriendMessage(answers: AnswerSet): Promise<void> {
   const message = createMessage(answers);
 
-  // Send via messaging channels
-  await sendToChannels(girlfriendProfile, message);
+  try {
+    // Send via messaging channels
+    await sendToChannels(girlfriendProfile, message);
 
-  // Send via email if configured
-  if (girlfriendProfile.preferredChannels.includes('email') && girlfriendProfile.email) {
-    await sendEmail(
-      girlfriendProfile.email,
-      'Good Morning Love 💕',
-      message
-    );
+    // Send via email if configured
+    if (girlfriendProfile.preferredChannels.includes('email') && girlfriendProfile.email) {
+      await sendEmail(
+        girlfriendProfile.email,
+        'Good Morning Love 💕',
+        message
+      );
+    }
+
+    console.log('Girlfriend message sent successfully');
+
+    // Log to history
+    for (const channel of girlfriendProfile.preferredChannels) {
+      if (channel === 'email') {
+        addHistoryEntry({
+          timestamp: new Date().toISOString(),
+          type: 'girlfriend_message',
+          channel: 'sms', // Use sms as default for email
+          status: 'sent',
+          message: message,
+        });
+      } else {
+        addHistoryEntry({
+          timestamp: new Date().toISOString(),
+          type: 'girlfriend_message',
+          channel: channel as 'sms' | 'whatsapp',
+          status: 'sent',
+          message: message,
+        });
+      }
+    }
+  } catch (error) {
+    // Log failure to history
+    for (const channel of girlfriendProfile.preferredChannels) {
+      if (channel !== 'email') {
+        addHistoryEntry({
+          timestamp: new Date().toISOString(),
+          type: 'girlfriend_message',
+          channel: channel as 'sms' | 'whatsapp',
+          status: 'failed',
+          message: message,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
+      }
+    }
+    throw error;
   }
-
-  console.log('Girlfriend message sent successfully');
 }
 
 export function getLastPromptTimestamp(): Date | null {
