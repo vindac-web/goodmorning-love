@@ -17,6 +17,7 @@ interface Config {
   schedule: {
     timezone: string;
     morningTime: string;
+    girlfriendSendTime: string;
   };
   email: {
     host: string;
@@ -61,6 +62,7 @@ const config: Config = {
   schedule: {
     timezone: process.env.TIMEZONE!,
     morningTime: process.env.MORNING_TIME!,
+    girlfriendSendTime: process.env.GIRLFRIEND_SEND_TIME || '08:30',
   },
   email: {
     host: process.env.SMTP_HOST || '',

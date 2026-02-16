@@ -7,6 +7,9 @@ import { createMessage } from '../utils/createMessage';
 // Store the last prompt timestamp to validate incoming replies
 let lastPromptTimestamp: Date | null = null;
 
+// Store pending answers to be sent at scheduled time
+let pendingAnswers: AnswerSet | null = null;
+
 export async function sendMorningQuestions(): Promise<void> {
   const questionText = morningQuestions
     .map((q) => `${q.number}. ${q.text}`)
@@ -42,13 +45,14 @@ export async function handleUserReply(from: string, body: string): Promise<void>
     return;
   }
 
-  // Create and send the girlfriend message
-  await sendGirlfriendMessage(answers);
+  // Store the answers to be sent at scheduled time
+  pendingAnswers = answers;
+  console.log('Answers saved, will be sent at scheduled time');
 
   // Send confirmation to user
   await sendToChannels(
     myProfile,
-    '✅ Your message has been sent to your girlfriend!'
+    'Your answers have been saved! Your message will be sent to your girlfriend at 8:30 AM.'
   );
 }
 
@@ -72,4 +76,25 @@ export async function sendGirlfriendMessage(answers: AnswerSet): Promise<void> {
 
 export function getLastPromptTimestamp(): Date | null {
   return lastPromptTimestamp;
+}
+
+export async function sendPendingGirlfriendMessage(): Promise<void> {
+  if (!pendingAnswers) {
+    console.log('No pending answers to send');
+    return;
+  }
+
+  // Send the girlfriend message
+  await sendGirlfriendMessage(pendingAnswers);
+
+  // Reset pending answers
+  pendingAnswers = null;
+
+  // Send confirmation to user
+  await sendToChannels(
+    myProfile,
+    'Your love message has been delivered!'
+  );
+
+  console.log('Pending girlfriend message sent successfully');
 }

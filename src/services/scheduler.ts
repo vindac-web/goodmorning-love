@@ -1,20 +1,18 @@
 import cron from 'node-cron';
 import config from '../config';
-import { sendMorningQuestions } from './goodMorningService';
+import { sendMorningQuestions, sendPendingGirlfriendMessage } from './goodMorningService';
 
 export function initializeScheduler(): void {
-  const [hours, minutes] = config.schedule.morningTime.split(':');
-
-  // Create cron expression: minutes hours * * *
-  const cronExpression = `${minutes} ${hours} * * *`;
+  // Schedule morning questions
+  const [morningHours, morningMinutes] = config.schedule.morningTime.split(':');
+  const morningCronExpression = `${morningMinutes} ${morningHours} * * *`;
 
   console.log(
     `Scheduling morning questions for ${config.schedule.morningTime} ${config.schedule.timezone}`
   );
 
-  // Schedule the job
   cron.schedule(
-    cronExpression,
+    morningCronExpression,
     async () => {
       console.log('Running scheduled morning questions job...');
       try {
@@ -22,6 +20,30 @@ export function initializeScheduler(): void {
         console.log('Morning questions sent successfully');
       } catch (error) {
         console.error('Error sending morning questions:', error);
+      }
+    },
+    {
+      timezone: config.schedule.timezone,
+    }
+  );
+
+  // Schedule girlfriend message delivery
+  const [girlfriendHours, girlfriendMinutes] = config.schedule.girlfriendSendTime.split(':');
+  const girlfriendCronExpression = `${girlfriendMinutes} ${girlfriendHours} * * *`;
+
+  console.log(
+    `Scheduling girlfriend message delivery for ${config.schedule.girlfriendSendTime} ${config.schedule.timezone}`
+  );
+
+  cron.schedule(
+    girlfriendCronExpression,
+    async () => {
+      console.log('Running scheduled girlfriend message delivery job...');
+      try {
+        await sendPendingGirlfriendMessage();
+        console.log('Girlfriend message delivery job completed');
+      } catch (error) {
+        console.error('Error sending girlfriend message:', error);
       }
     },
     {
