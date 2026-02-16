@@ -128,7 +128,12 @@ async function sendTestGirlfriend() {
 
     try {
         setLoading(true);
-        const response = await fetch('/api/dashboard/test/girlfriend', { method: 'POST' });
+        const mediaUrl = document.getElementById('test-media-url')?.value || undefined;
+        const response = await fetch('/api/dashboard/test/girlfriend', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mediaUrl })
+        });
         const data = await response.json();
 
         if (data.success) {
@@ -138,6 +143,61 @@ async function sendTestGirlfriend() {
         }
     } catch (error) {
         showToast('Failed to send message', 'error');
+    } finally {
+        setLoading(false);
+    }
+}
+
+async function loadRandomGif() {
+    try {
+        const response = await fetch('/api/dashboard/media/random');
+        const data = await response.json();
+
+        const mediaUrlInput = document.getElementById('test-media-url');
+        if (mediaUrlInput) {
+            mediaUrlInput.value = data.url;
+            updateMediaPreview();
+        }
+    } catch (error) {
+        showToast('Failed to load random GIF', 'error');
+    }
+}
+
+function updateMediaPreview() {
+    const mediaUrl = document.getElementById('test-media-url')?.value;
+    const preview = document.getElementById('media-preview');
+
+    if (preview) {
+        if (mediaUrl && mediaUrl.trim()) {
+            preview.innerHTML = `<img src="${escapeHtml(mediaUrl)}" alt="Media preview" style="max-width: 200px; max-height: 200px; border-radius: 0.5rem;">`;
+            preview.classList.remove('hidden');
+        } else {
+            preview.innerHTML = '';
+            preview.classList.add('hidden');
+        }
+    }
+}
+
+async function sendVoiceMessage() {
+    const message = prompt('Enter voice message text:');
+    if (!message) return;
+
+    try {
+        setLoading(true);
+        const response = await fetch('/api/dashboard/test/voice', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            showToast('Voice message sent!', 'success');
+        } else {
+            showToast(data.error || 'Failed to send voice message', 'error');
+        }
+    } catch (error) {
+        showToast('Failed to send voice message', 'error');
     } finally {
         setLoading(false);
     }
@@ -393,6 +453,7 @@ async function loadHistory() {
                     <span class="history-status">${entry.status} • ${entry.channel} • ${formatDate(entry.timestamp)}</span>
                 </div>
                 <div class="history-message">${escapeHtml(truncate(entry.message, 200))}</div>
+                ${entry.mediaUrl ? `<div style="margin-top: 0.5rem;"><img src="${escapeHtml(entry.mediaUrl)}" alt="Media" style="max-width: 150px; max-height: 150px; border-radius: 0.25rem;"></div>` : ''}
                 ${entry.error ? `<div style="color: var(--del-color); font-size: 0.875rem; margin-top: 0.5rem;">Error: ${escapeHtml(entry.error)}</div>` : ''}
             `;
             list.appendChild(div);

@@ -4,6 +4,7 @@ dotenv.config();
 
 interface Config {
   port: number;
+  baseUrl: string;
   twilio: {
     accountSid: string;
     authToken: string;
@@ -59,6 +60,7 @@ function parseChannels(envVar: string | undefined, defaultValue: string): ('what
 
 const config: Config = {
   port: parseInt(process.env.PORT || '3000', 10),
+  baseUrl: process.env.BASE_URL || 'https://goodmorning-love-production.up.railway.app',
   twilio: {
     accountSid: process.env.TWILIO_ACCOUNT_SID!,
     authToken: process.env.TWILIO_AUTH_TOKEN!,

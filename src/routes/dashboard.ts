@@ -8,12 +8,15 @@ import {
   getTemplates,
   saveTemplates,
   getHistory,
-  ScheduleSettings
+  ScheduleSettings,
+  addHistoryEntry
 } from '../services/dataStore';
 import { morningQuestions, myProfile, girlfriendProfile } from '../config/questions';
 import config from '../config';
 import { sendMorningQuestions, sendGirlfriendMessage } from '../services/goodMorningService';
 import { AnswerSet } from '../utils/parseAnswers';
+import { sendVoiceMessage } from '../services/messaging';
+import { storeVoiceMessage } from './twiml';
 
 const router: Router = express.Router();
 
@@ -204,14 +207,67 @@ router.post('/test/questions', async (req: Request, res: Response) => {
 
 router.post('/test/girlfriend', async (req: Request, res: Response) => {
   try {
+    const { mediaUrl } = req.body;
     const testAnswers: AnswerSet = {
       loveNote: 'Your smile lights up my whole world',
       gratitude: "I'm grateful for your kindness and patience",
       encouragement: "You're going to crush it today, I believe in you"
     };
 
-    await sendGirlfriendMessage(testAnswers);
+    await sendGirlfriendMessage(testAnswers, mediaUrl);
     res.json({ success: true, message: 'Test girlfriend message sent' });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+});
+
+// Random love GIF endpoint
+const LOVE_GIFS = [
+  'https://media.giphy.com/media/3oEjI5VtIhHvK37WYo/giphy.gif', // Hearts floating
+  'https://media.giphy.com/media/l4FsAvJHInq9s25q0/giphy.gif', // Cute love hearts
+  'https://media.giphy.com/media/26FLdmIp6wJr91JAI/giphy.gif', // Love hearts popping
+  'https://media.giphy.com/media/xUOxeZWKz8sD7SphGo/giphy.gif', // Romantic hearts
+  'https://media.giphy.com/media/3o6ZsZdNs3yE5l6hWM/giphy.gif', // Love animation
+  'https://media.giphy.com/media/l4FGni1RBAR2OWsGk/giphy.gif', // Cute hearts
+  'https://media.giphy.com/media/3ornk57KwDXf81rjWM/giphy.gif', // Love burst
+  'https://media.giphy.com/media/26BRBKqUiq586bRVm/giphy.gif', // Hearts beating
+  'https://media.giphy.com/media/3o7TKMt1VVNkHV2PaE/giphy.gif', // Love sparkles
+  'https://media.giphy.com/media/l0HlQ7LRalQqdWfao/giphy.gif', // Romantic hearts animation
+];
+
+router.get('/media/random', (req: Request, res: Response) => {
+  const randomGif = LOVE_GIFS[Math.floor(Math.random() * LOVE_GIFS.length)];
+  res.json({ url: randomGif });
+});
+
+// Voice message test endpoint
+router.post('/test/voice', async (req: Request, res: Response) => {
+  try {
+    const { message } = req.body;
+
+    if (!message) {
+      return res.status(400).json({ error: 'Message is required' });
+    }
+
+    // Store the voice message and get an ID
+    const voiceMessageId = storeVoiceMessage(message);
+
+    // Send the voice call
+    await sendVoiceMessage(config.phoneNumbers.girlfriend, message, voiceMessageId);
+
+    // Log to history
+    addHistoryEntry({
+      timestamp: new Date().toISOString(),
+      type: 'girlfriend_message',
+      channel: 'voice',
+      status: 'sent',
+      message: message,
+    });
+
+    res.json({ success: true, message: 'Voice message sent' });
   } catch (error) {
     res.status(500).json({
       success: false,
