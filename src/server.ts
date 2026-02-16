@@ -1,14 +1,34 @@
 import express, { Express, Request, Response } from 'express';
+import session from 'express-session';
+import path from 'path';
 import webhookRouter from './routes/webhook';
+import dashboardRouter from './routes/dashboard';
 import {
   sendMorningQuestions,
   sendPendingGirlfriendMessage,
   sendGirlfriendMessage,
 } from './services/goodMorningService';
 import { AnswerSet } from './utils/parseAnswers';
+import { ensureDataDir } from './services/dataStore';
 
 export function createServer(): Express {
   const app = express();
+
+  // Ensure data directory exists
+  ensureDataDir();
+
+  // Session middleware for dashboard authentication
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET || 'default-secret-change-me',
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      },
+    })
+  );
 
   // Middleware
   app.use(express.urlencoded({ extended: false }));
@@ -17,6 +37,15 @@ export function createServer(): Express {
   // Health check endpoint
   app.get('/health', (req: Request, res: Response) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  });
+
+  // Dashboard routes and static files
+  app.use('/api/dashboard', dashboardRouter);
+  app.use('/dashboard', express.static(path.join(__dirname, 'public')));
+
+  // Redirect /dashboard to /dashboard/index.html
+  app.get('/dashboard', (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
   });
 
   // Webhook routes

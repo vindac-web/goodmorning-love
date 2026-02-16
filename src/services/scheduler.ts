@@ -1,14 +1,22 @@
 import cron from 'node-cron';
 import config from '../config';
 import { sendMorningQuestions, sendPendingGirlfriendMessage } from './goodMorningService';
+import { getSettings } from './dataStore';
 
 export function initializeScheduler(): void {
+  // Get schedule settings from data store (or use config defaults)
+  const settings = getSettings({
+    morningTime: config.schedule.morningTime,
+    girlfriendSendTime: config.schedule.girlfriendSendTime,
+    timezone: config.schedule.timezone,
+  });
+
   // Schedule morning questions
-  const [morningHours, morningMinutes] = config.schedule.morningTime.split(':');
+  const [morningHours, morningMinutes] = settings.morningTime.split(':');
   const morningCronExpression = `${morningMinutes} ${morningHours} * * *`;
 
   console.log(
-    `Scheduling morning questions for ${config.schedule.morningTime} ${config.schedule.timezone}`
+    `Scheduling morning questions for ${settings.morningTime} ${settings.timezone}`
   );
 
   cron.schedule(
@@ -23,16 +31,16 @@ export function initializeScheduler(): void {
       }
     },
     {
-      timezone: config.schedule.timezone,
+      timezone: settings.timezone,
     }
   );
 
   // Schedule girlfriend message delivery
-  const [girlfriendHours, girlfriendMinutes] = config.schedule.girlfriendSendTime.split(':');
+  const [girlfriendHours, girlfriendMinutes] = settings.girlfriendSendTime.split(':');
   const girlfriendCronExpression = `${girlfriendMinutes} ${girlfriendHours} * * *`;
 
   console.log(
-    `Scheduling girlfriend message delivery for ${config.schedule.girlfriendSendTime} ${config.schedule.timezone}`
+    `Scheduling girlfriend message delivery for ${settings.girlfriendSendTime} ${settings.timezone}`
   );
 
   cron.schedule(
@@ -47,7 +55,7 @@ export function initializeScheduler(): void {
       }
     },
     {
-      timezone: config.schedule.timezone,
+      timezone: settings.timezone,
     }
   );
 
