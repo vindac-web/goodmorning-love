@@ -1,3 +1,5 @@
+import config from './index';
+
 export interface Question {
   number: number;
   text: string;
@@ -29,12 +31,12 @@ export const myProfile: UserProfile = {
   name: 'Me',
   phoneNumber: process.env.MY_PHONE_NUMBER || '',
   email: process.env.EMAIL_FROM || '',
-  preferredChannels: ['whatsapp', 'sms'],
+  preferredChannels: config.channels.my,
 };
 
 export const girlfriendProfile: UserProfile = {
   name: 'Girlfriend',
   phoneNumber: process.env.GIRLFRIEND_PHONE_NUMBER || '',
   email: process.env.GIRLFRIEND_EMAIL || '',
-  preferredChannels: ['whatsapp', 'sms', 'email'],
+  preferredChannels: config.channels.girlfriend,
 };
