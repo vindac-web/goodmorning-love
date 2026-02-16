@@ -11,9 +11,10 @@ A production-ready daily morning prompt app that sends personalized love message
 1. **Morning Prompt** (7:30 AM by default): The app sends you three questions via WhatsApp/SMS
 2. **Your Reply**: Answer all three questions in one message (line-based or numbered format)
 3. **Auto-Parse**: The app extracts your answers into structured fields
-4. **Message Creation**: Generates a personalized, affectionate message
-5. **Multi-Channel Delivery**: Sends to your girlfriend via WhatsApp, SMS, and/or email
-6. **Confirmation**: You receive a confirmation that the message was sent
+4. **Queued for Delivery**: Your answers are saved and scheduled for delivery at 8:30 AM (configurable)
+5. **Delayed Delivery**: At the configured time, the app generates a personalized, affectionate message
+6. **Multi-Channel Delivery**: Sends to your girlfriend via WhatsApp, SMS, and/or email
+7. **Confirmation**: You receive a confirmation that the message was delivered
 
 ## Features
 
@@ -74,6 +75,7 @@ A production-ready daily morning prompt app that sends personalized love message
 
    TIMEZONE=America/New_York
    MORNING_TIME=07:30
+   GIRLFRIEND_SEND_TIME=08:30
 
    # Optional email config
    SMTP_HOST=smtp.sendgrid.net
@@ -160,9 +162,10 @@ export const morningQuestions: Question[] = [
 
 ### Adjust Schedule
 
-Edit the `MORNING_TIME` in `.env`:
+Edit the schedule times in `.env`:
 ```env
-MORNING_TIME=07:30  # 24-hour format
+MORNING_TIME=07:30          # When to send questions to you (24-hour format)
+GIRLFRIEND_SEND_TIME=08:30  # When to send message to girlfriend (24-hour format)
 TIMEZONE=America/New_York
 ```
 
@@ -377,6 +380,7 @@ Body=Answer text here
 | `GIRLFRIEND_PHONE_NUMBER` | Yes | Girlfriend's phone | `+1XXXXXXXXXX` |
 | `TIMEZONE` | Yes | Timezone for scheduling | `America/New_York` |
 | `MORNING_TIME` | Yes | Daily prompt time (24h) | `07:30` |
+| `GIRLFRIEND_SEND_TIME` | No | Girlfriend message time (24h, default: 08:30) | `08:30` |
 | `SMTP_HOST` | No | SMTP server host | `smtp.sendgrid.net` |
 | `SMTP_PORT` | No | SMTP server port | `587` |
 | `SMTP_USER` | No | SMTP username | `apikey` |
