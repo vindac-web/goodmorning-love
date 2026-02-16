@@ -87,12 +87,12 @@ export async function handleUserReply(from: string, body: string): Promise<void>
   );
 }
 
-export async function sendGirlfriendMessage(answers: AnswerSet): Promise<void> {
+export async function sendGirlfriendMessage(answers: AnswerSet, mediaUrl?: string): Promise<void> {
   const message = createMessage(answers);
 
   try {
     // Send via messaging channels
-    await sendToChannels(girlfriendProfile, message);
+    await sendToChannels(girlfriendProfile, message, mediaUrl);
 
     // Send via email if configured
     if (girlfriendProfile.preferredChannels.includes('email') && girlfriendProfile.email) {
@@ -114,6 +114,7 @@ export async function sendGirlfriendMessage(answers: AnswerSet): Promise<void> {
           channel: 'sms', // Use sms as default for email
           status: 'sent',
           message: message,
+          mediaUrl,
         });
       } else {
         addHistoryEntry({
@@ -122,6 +123,7 @@ export async function sendGirlfriendMessage(answers: AnswerSet): Promise<void> {
           channel: channel as 'sms' | 'whatsapp',
           status: 'sent',
           message: message,
+          mediaUrl,
         });
       }
     }
@@ -136,6 +138,7 @@ export async function sendGirlfriendMessage(answers: AnswerSet): Promise<void> {
           status: 'failed',
           message: message,
           error: error instanceof Error ? error.message : 'Unknown error',
+          mediaUrl,
         });
       }
     }

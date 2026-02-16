@@ -3,6 +3,7 @@ import session from 'express-session';
 import path from 'path';
 import webhookRouter from './routes/webhook';
 import dashboardRouter from './routes/dashboard';
+import twimlRouter from './routes/twiml';
 import {
   sendMorningQuestions,
   sendPendingGirlfriendMessage,
@@ -16,6 +17,9 @@ export function createServer(): Express {
 
   // Ensure data directory exists
   ensureDataDir();
+
+  // Trust proxy for Railway deployment
+  app.set('trust proxy', 1);
 
   // Session middleware for dashboard authentication
   app.use(
@@ -47,6 +51,9 @@ export function createServer(): Express {
   app.get('/dashboard', (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
   });
+
+  // TwiML routes
+  app.use('/twiml', twimlRouter);
 
   // Webhook routes
   app.use('/webhook', webhookRouter);

@@ -292,7 +292,14 @@
 
                 <h3>Quick Actions</h3>
                 <button onclick="sendTestQuestions()">Send Questions Now</button>
-                <button onclick="sendTestGirlfriend()" class="secondary">Send Test Girlfriend Message</button>
+                <button onclick="sendVoiceMessage()" class="secondary">Send Voice Message</button>
+
+                <h3>Test Girlfriend Message</h3>
+                <label for="test-media-url">Media URL (optional)</label>
+                <input type="url" id="test-media-url" placeholder="https://example.com/image.gif" oninput="updateMediaPreview()">
+                <button onclick="loadRandomGif()" class="secondary">Random Love GIF</button>
+                <div id="media-preview" class="hidden" style="margin-top: 1rem;"></div>
+                <button onclick="sendTestGirlfriend()" style="margin-top: 1rem;">Send Test Girlfriend Message</button>
             </div>
 
             <div id="questions-tab" class="tab-content">
