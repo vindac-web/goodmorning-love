@@ -7,235 +7,74 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💕</text></svg>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     <style>
-        :root {
-            --primary: #d63384;
-            --primary-hover: #b02a6a;
-        }
-
-        body {
-            padding: 1rem;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
+        :root { --primary: #d63384; --primary-hover: #b02a6a; }
+        body { padding: 1rem; }
+        .container { max-width: 1200px; margin: 0 auto; }
         .nav-tabs {
-            display: flex;
-            gap: 0;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid #ddd;
-            overflow-x: auto;
-            list-style: none;
-            padding: 0;
+            display: flex !important;
+            gap: 0 !important;
+            margin-bottom: 2rem !important;
+            border-bottom: 2px solid #ccc !important;
+            overflow-x: auto !important;
+            list-style: none !important;
+            padding: 0 !important;
+            background: transparent !important;
         }
-
-        .nav-tab {
-            padding: 0.75rem 1.25rem;
-            cursor: pointer;
-            text-decoration: none;
-            color: #555;
-            font-size: 1rem;
-            font-weight: 500;
-            border-bottom: 3px solid transparent;
-            margin-bottom: -2px;
-            transition: color 0.2s, border-color 0.2s;
-            white-space: nowrap;
-            display: inline-block;
+        .nav-tabs .nav-tab {
+            padding: 0.75rem 1.25rem !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+            color: #555 !important;
+            font-size: 1rem !important;
+            font-weight: 500 !important;
+            border: none !important;
+            border-bottom: 3px solid transparent !important;
+            margin-bottom: -2px !important;
+            white-space: nowrap !important;
+            display: inline-block !important;
+            background: transparent !important;
+            box-shadow: none !important;
         }
-
-        .nav-tab:hover {
-            color: var(--primary);
-            text-decoration: none;
+        .nav-tabs .nav-tab:hover {
+            color: var(--primary) !important;
+            text-decoration: none !important;
         }
-
-        .nav-tab.active {
-            border-bottom-color: var(--primary);
-            color: var(--primary);
-            font-weight: 600;
+        .nav-tabs .nav-tab.active {
+            border-bottom-color: var(--primary) !important;
+            color: var(--primary) !important;
+            font-weight: 600 !important;
         }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .status-grid {
-            display: grid;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        @media (min-width: 768px) {
-            .status-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        .status-card {
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            background: var(--card-background-color);
-            border: 1px solid var(--muted-border-color);
-        }
-
-        .status-card h3 {
-            margin-top: 0;
-            margin-bottom: 1rem;
-            font-size: 1rem;
-            color: var(--muted-color);
-        }
-
-        .status-value {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .question-item {
-            display: flex;
-            gap: 1rem;
-            align-items: start;
-            margin-bottom: 1rem;
-            padding: 1rem;
-            border: 1px solid var(--muted-border-color);
-            border-radius: 0.5rem;
-        }
-
-        .question-number {
-            font-weight: 600;
-            min-width: 2rem;
-        }
-
-        .question-text {
-            flex: 1;
-        }
-
-        .question-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .btn-sm {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
-        }
-
-        .history-entry {
-            padding: 1rem;
-            border: 1px solid var(--muted-border-color);
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .history-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .history-type {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .history-type.question {
-            background: #e7f3ff;
-            color: #0969da;
-        }
-
-        .history-type.reply {
-            background: #dafbe1;
-            color: #1a7f37;
-        }
-
-        .history-type.girlfriend_message {
-            background: #ffeff7;
-            color: #bf3989;
-        }
-
-        .history-status {
-            font-size: 0.875rem;
-            color: var(--muted-color);
-        }
-
-        .history-message {
-            color: var(--muted-color);
-            font-size: 0.875rem;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            padding: 1rem 1.5rem;
-            border-radius: 0.5rem;
-            background: var(--card-background-color);
-            border: 1px solid var(--muted-border-color);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 1000;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        .toast.success {
-            border-color: #1a7f37;
-            background: #dafbe1;
-            color: #1a7f37;
-        }
-
-        .toast.error {
-            border-color: #cf222e;
-            background: #ffebe9;
-            color: #cf222e;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        .template-preview {
-            padding: 1rem;
-            background: var(--code-background-color);
-            border-radius: 0.5rem;
-            margin-top: 0.5rem;
-            white-space: pre-wrap;
-            font-family: monospace;
-            font-size: 0.875rem;
-        }
-
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        header {
-            margin-bottom: 2rem;
-        }
-
-        header h1 {
-            margin-bottom: 0.5rem;
-        }
-
-        .logout-btn {
-            float: right;
-        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .status-grid { display: grid; gap: 1rem; margin-bottom: 2rem; }
+        @media (min-width: 768px) { .status-grid { grid-template-columns: repeat(2, 1fr); } }
+        .status-card { padding: 1.5rem; border-radius: 0.5rem; background: var(--card-background-color); border: 1px solid var(--muted-border-color); }
+        .status-card h3 { margin-top: 0; margin-bottom: 1rem; font-size: 1rem; color: var(--muted-color); }
+        .status-value { font-size: 1.5rem; font-weight: 600; }
+        .question-item { display: flex; gap: 1rem; align-items: start; margin-bottom: 1rem; padding: 1rem; border: 1px solid var(--muted-border-color); border-radius: 0.5rem; }
+        .question-number { font-weight: 600; min-width: 2rem; }
+        .question-text { flex: 1; }
+        .question-actions { display: flex; gap: 0.5rem; }
+        .btn-sm { padding: 0.25rem 0.5rem; font-size: 0.875rem; }
+        .history-entry { padding: 1rem; border: 1px solid var(--muted-border-color); border-radius: 0.5rem; margin-bottom: 1rem; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .history-type { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .history-type.question { background: #e7f3ff; color: #0969da; }
+        .history-type.reply { background: #dafbe1; color: #1a7f37; }
+        .history-type.girlfriend_message { background: #ffeff7; color: #bf3989; }
+        .toast { position: fixed; bottom: 2rem; right: 2rem; padding: 1rem 1.5rem; border-radius: 0.5rem; background: var(--card-background-color); border: 1px solid var(--muted-border-color); box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; animation: slideIn 0.3s ease-out; }
+        .toast.success { border-color: #1a7f37; background: #dafbe1; color: #1a7f37; }
+        .toast.error { border-color: #cf222e; background: #ffebe9; color: #cf222e; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .template-preview { padding: 1rem; background: var(--code-background-color); border-radius: 0.5rem; margin-top: 0.5rem; white-space: pre-wrap; font-family: monospace; font-size: 0.875rem; }
+        .loading { opacity: 0.6; pointer-events: none; }
+        .hidden { display: none; }
+        header { margin-bottom: 2rem; }
+        header h1 { margin-bottom: 0.5rem; }
+        .logout-btn { float: right; }
     </style>
 </head>
 <body>
-    <!-- Login Page -->
     <div id="login-page" class="container">
         <article style="max-width: 400px; margin: 5rem auto;">
             <h2>Dashboard Login</h2>
@@ -247,95 +86,65 @@
             </form>
         </article>
     </div>
-
-    <!-- Dashboard -->
     <div id="dashboard" class="container hidden">
         <header>
             <h1>Good Morning Love Dashboard 💕</h1>
             <button class="logout-btn" onclick="logout()">Logout</button>
         </header>
-
-        <nav class="nav-tabs">
-            <a href="#" class="nav-tab active" onclick="switchTab(event, 'status')">Status</a>
-            <a href="#" class="nav-tab" onclick="switchTab(event, 'questions')">Questions</a>
-            <a href="#" class="nav-tab" onclick="switchTab(event, 'schedule')">Schedule</a>
-            <a href="#" class="nav-tab" onclick="switchTab(event, 'templates')">Templates</a>
-            <a href="#" class="nav-tab" onclick="switchTab(event, 'history')">History</a>
-        </nav>
-
-        <!-- Status Tab -->
+        <div class="nav-tabs">
+            <a href="javascript:void(0)" class="nav-tab active" onclick="switchTab(event, 'status')" style="color:#555;text-decoration:none;padding:0.75rem 1.25rem;border-bottom:3px solid #d63384;margin-bottom:-2px;">Status</a>
+            <a href="javascript:void(0)" class="nav-tab" onclick="switchTab(event, 'questions')" style="color:#555;text-decoration:none;padding:0.75rem 1.25rem;border-bottom:3px solid transparent;margin-bottom:-2px;">Questions</a>
+            <a href="javascript:void(0)" class="nav-tab" onclick="switchTab(event, 'schedule')" style="color:#555;text-decoration:none;padding:0.75rem 1.25rem;border-bottom:3px solid transparent;margin-bottom:-2px;">Schedule</a>
+            <a href="javascript:void(0)" class="nav-tab" onclick="switchTab(event, 'templates')" style="color:#555;text-decoration:none;padding:0.75rem 1.25rem;border-bottom:3px solid transparent;margin-bottom:-2px;">Templates</a>
+            <a href="javascript:void(0)" class="nav-tab" onclick="switchTab(event, 'history')" style="color:#555;text-decoration:none;padding:0.75rem 1.25rem;border-bottom:3px solid transparent;margin-bottom:-2px;">History</a>
+        </div>
         <div id="tab-status" class="tab-content active">
             <h2>App Status</h2>
             <div class="status-grid">
-                <div class="status-card">
-                    <h3>Morning Questions Time</h3>
-                    <div class="status-value" id="morning-time-display">--:--</div>
-                </div>
-                <div class="status-card">
-                    <h3>Girlfriend Message Time</h3>
-                    <div class="status-value" id="girlfriend-time-display">--:--</div>
-                </div>
-                <div class="status-card">
-                    <h3>Timezone</h3>
-                    <div class="status-value" id="timezone-display">---</div>
-                </div>
-                <div class="status-card">
-                    <h3>Status</h3>
-                    <div class="status-value">✅ Running</div>
-                </div>
+                <div class="status-card"><h3>Morning Questions Time</h3><div class="status-value" id="morning-time-display">--:--</div></div>
+                <div class="status-card"><h3>Girlfriend Message Time</h3><div class="status-value" id="girlfriend-time-display">--:--</div></div>
+                <div class="status-card"><h3>Timezone</h3><div class="status-value" id="timezone-display">---</div></div>
+                <div class="status-card"><h3>Status</h3><div class="status-value">✅ Running</div></div>
             </div>
-
             <h3>Phone Numbers</h3>
             <p><strong>My Number:</strong> <span id="my-number">+1 ***-***-****</span></p>
             <p><strong>Girlfriend Number:</strong> <span id="gf-number">+1 ***-***-****</span></p>
-
             <h3>Channel Preferences</h3>
             <p><strong>My Channels:</strong> <span id="my-channels">---</span></p>
             <p><strong>Girlfriend Channels:</strong> <span id="gf-channels">---</span></p>
-
             <h3>Quick Actions</h3>
             <button onclick="sendQuestions()" class="contrast">Send Questions Now</button>
             <button onclick="sendVoiceMessage()" class="secondary">Send Voice Message</button>
-
             <h3>Test Girlfriend Message</h3>
             <label for="test-media-url">Media URL (optional)</label>
-            <input type="url" id="test-media-url" placeholder="https://example.com/image.gif" oninput="updateMediaPreview()">
+            <input type="url" id="test-media-url" placeholder="https://example.com/image.gif">
             <button onclick="fetchRandomGif()" class="secondary">Random Love GIF</button>
             <button onclick="sendTestGirlfriend()" class="contrast">Send Test Girlfriend Message</button>
         </div>
-
-        <!-- Questions Tab -->
         <div id="tab-questions" class="tab-content">
             <h2>Morning Questions</h2>
             <div id="questions-list"></div>
             <button onclick="addQuestion()" class="secondary">Add Question</button>
             <button onclick="saveQuestions()" class="contrast">Save Questions</button>
         </div>
-
-        <!-- Schedule Tab -->
         <div id="tab-schedule" class="tab-content">
             <h2>Schedule Settings</h2>
             <form id="schedule-form" onsubmit="saveSchedule(event)">
-                <label for="morning-time">Morning Questions Time (24-hour format)</label>
+                <label for="morning-time">Morning Questions Time (24-hour)</label>
                 <input type="time" id="morning-time" required>
-                <label for="girlfriend-time">Girlfriend Message Time (24-hour format)</label>
+                <label for="girlfriend-time">Girlfriend Message Time (24-hour)</label>
                 <input type="time" id="girlfriend-time" required>
                 <label for="timezone">Timezone</label>
                 <select id="timezone" required>
                     <option value="America/New_York">Eastern Time (ET)</option>
                     <option value="America/Chicago">Central Time (CT)</option>
                     <option value="America/Denver">Mountain Time (MT)</option>
-                    <option value="America/Phoenix">Arizona Time (MST)</option>
                     <option value="America/Los_Angeles">Pacific Time (PT)</option>
-                    <option value="America/Anchorage">Alaska Time (AKT)</option>
                     <option value="Pacific/Honolulu">Hawaii Time (HST)</option>
                 </select>
                 <button type="submit" class="contrast">Save Schedule</button>
             </form>
-            <p><em>Note: The app will need to be restarted for schedule changes to take effect.</em></p>
         </div>
-
-        <!-- Templates Tab -->
         <div id="tab-templates" class="tab-content">
             <h2>Message Templates</h2>
             <p>Use <code>{loveNote}</code>, <code>{gratitude}</code>, and <code>{encouragement}</code> as placeholders.</p>
@@ -343,80 +152,62 @@
             <button onclick="addTemplate()" class="secondary">Add Template</button>
             <button onclick="saveTemplates()" class="contrast">Save Templates</button>
         </div>
-
-        <!-- History Tab -->
         <div id="tab-history" class="tab-content">
             <h2>Message History</h2>
             <div id="history-list"></div>
         </div>
     </div>
-
     <script>
-        let sessionToken = localStorage.getItem('dashboard_session');
-
-        // Tab switching
+        var sessionToken = localStorage.getItem('dashboard_session');
         function switchTab(event, tabName) {
             event.preventDefault();
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(function(t) {
+                t.classList.remove('active');
+                t.style.color = '#555';
+                t.style.borderBottom = '3px solid transparent';
+            });
+            document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
             event.target.classList.add('active');
+            event.target.style.color = '#d63384';
+            event.target.style.borderBottom = '3px solid #d63384';
             document.getElementById('tab-' + tabName).classList.add('active');
             if (tabName === 'history') loadHistory();
+            if (tabName === 'templates') loadTemplates();
         }
-
-        // Login
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const password = document.getElementById('password').value;
+            var password = document.getElementById('password').value;
             try {
-                const res = await fetch('/api/dashboard/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    sessionToken = data.token || 'authenticated';
-                    localStorage.setItem('dashboard_session', sessionToken);
-                    showDashboard();
-                } else {
-                    showToast('Invalid password', 'error');
-                }
-            } catch (err) {
-                showToast('Login failed: ' + err.message, 'error');
-            }
+                var res = await fetch('/api/dashboard/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: password }) });
+                var data = await res.json();
+                if (data.success) { sessionToken = data.token || 'authenticated'; localStorage.setItem('dashboard_session', sessionToken); showDashboard(); }
+                else { showToast('Invalid password', 'error'); }
+            } catch (err) { showToast('Login failed: ' + err.message, 'error'); }
         });
-
         function showDashboard() {
             document.getElementById('login-page').classList.add('hidden');
             document.getElementById('dashboard').classList.remove('hidden');
-            loadStatus();
-            loadQuestions();
+            loadStatus(); loadQuestions();
         }
-
         function logout() {
-            localStorage.removeItem('dashboard_session');
-            sessionToken = null;
+            localStorage.removeItem('dashboard_session'); sessionToken = null;
             document.getElementById('login-page').classList.remove('hidden');
             document.getElementById('dashboard').classList.add('hidden');
         }
-
-        // API helper
-        async function apiCall(url, options = {}) {
-            const headers = { ...options.headers };
+        async function apiCall(url, options) {
+            options = options || {};
+            var headers = Object.assign({}, options.headers || {});
             if (sessionToken) headers['Authorization'] = 'Bearer ' + sessionToken;
             if (options.body && typeof options.body === 'object' && !(options.body instanceof FormData)) {
                 headers['Content-Type'] = 'application/json';
                 options.body = JSON.stringify(options.body);
             }
-            return fetch(url, { ...options, headers });
+            return fetch(url, Object.assign({}, options, { headers: headers }));
         }
-
-        // Load status
         async function loadStatus() {
             try {
-                const res = await apiCall('/api/dashboard/status');
-                const data = await res.json();
+                var res = await apiCall('/api/dashboard/status');
+                var data = await res.json();
                 document.getElementById('morning-time-display').textContent = data.morningTime || '--:--';
                 document.getElementById('girlfriend-time-display').textContent = data.girlfriendTime || '--:--';
                 document.getElementById('timezone-display').textContent = data.timezone || '---';
@@ -427,209 +218,40 @@
                 if (data.morningTime) document.getElementById('morning-time').value = data.morningTime;
                 if (data.girlfriendTime) document.getElementById('girlfriend-time').value = data.girlfriendTime;
                 if (data.timezone) document.getElementById('timezone').value = data.timezone;
-            } catch (err) {
-                console.error('Failed to load status:', err);
-            }
+            } catch (err) { console.error('Failed to load status:', err); }
         }
-
-        // Questions
-        let questions = [];
-
+        var questions = [];
         async function loadQuestions() {
-            try {
-                const res = await apiCall('/api/dashboard/questions');
-                const data = await res.json();
-                questions = data.questions || [];
-                renderQuestions();
-            } catch (err) {
-                console.error('Failed to load questions:', err);
-            }
+            try { var res = await apiCall('/api/dashboard/questions'); var data = await res.json(); questions = data.questions || []; renderQuestions(); }
+            catch (err) { console.error('Failed to load questions:', err); }
         }
-
         function renderQuestions() {
-            const list = document.getElementById('questions-list');
-            list.innerHTML = questions.map((q, i) => `
-                <div class="question-item">
-                    <span class="question-number">${i + 1}.</span>
-                    <input type="text" class="question-text" value="${q}" onchange="questions[${i}] = this.value">
-                    <div class="question-actions">
-                        <button onclick="removeQuestion(${i})" class="btn-sm secondary outline">Remove</button>
-                    </div>
-                </div>
-            `).join('');
+            var list = document.getElementById('questions-list');
+            list.innerHTML = questions.map(function(q, i) { return '<div class="question-item"><span class="question-number">' + (i+1) + '.</span><input type="text" class="question-text" value="' + q + '" onchange="questions[' + i + '] = this.value"><div class="question-actions"><button onclick="removeQuestion(' + i + ')" class="btn-sm secondary outline">Remove</button></div></div>'; }).join('');
         }
-
-        function addQuestion() {
-            questions.push('New question?');
-            renderQuestions();
-        }
-
-        function removeQuestion(index) {
-            questions.splice(index, 1);
-            renderQuestions();
-        }
-
+        function addQuestion() { questions.push('New question?'); renderQuestions(); }
+        function removeQuestion(index) { questions.splice(index, 1); renderQuestions(); }
         async function saveQuestions() {
-            try {
-                const res = await apiCall('/api/dashboard/questions', {
-                    method: 'POST',
-                    body: { questions }
-                });
-                const data = await res.json();
-                if (data.success) showToast('Questions saved!', 'success');
-                else showToast('Failed to save questions', 'error');
-            } catch (err) {
-                showToast('Error: ' + err.message, 'error');
-            }
+            try { var res = await apiCall('/api/dashboard/questions', { method: 'POST', body: { questions: questions } }); var data = await res.json(); if (data.success) showToast('Questions saved!', 'success'); else showToast('Failed', 'error'); }
+            catch (err) { showToast('Error: ' + err.message, 'error'); }
         }
-
-        // Schedule
         async function saveSchedule(e) {
             e.preventDefault();
-            try {
-                const res = await apiCall('/api/dashboard/schedule', {
-                    method: 'POST',
-                    body: {
-                        morningTime: document.getElementById('morning-time').value,
-                        girlfriendTime: document.getElementById('girlfriend-time').value,
-                        timezone: document.getElementById('timezone').value
-                    }
-                });
-                const data = await res.json();
-                if (data.success) showToast('Schedule saved!', 'success');
-                else showToast('Failed to save schedule', 'error');
-            } catch (err) {
-                showToast('Error: ' + err.message, 'error');
-            }
+            try { var res = await apiCall('/api/dashboard/schedule', { method: 'POST', body: { morningTime: document.getElementById('morning-time').value, girlfriendTime: document.getElementById('girlfriend-time').value, timezone: document.getElementById('timezone').value } }); var data = await res.json(); if (data.success) showToast('Schedule saved!', 'success'); else showToast('Failed', 'error'); }
+            catch (err) { showToast('Error: ' + err.message, 'error'); }
         }
-
-        // Actions
-        async function sendQuestions() {
-            try {
-                const res = await apiCall('/test/send-questions', { method: 'POST' });
-                const data = await res.json();
-                showToast(data.message || 'Questions sent!', data.success ? 'success' : 'error');
-            } catch (err) {
-                showToast('Error: ' + err.message, 'error');
-            }
-        }
-
-        async function sendVoiceMessage() {
-            try {
-                const res = await apiCall('/test/send-voice', { method: 'POST' });
-                const data = await res.json();
-                showToast(data.message || 'Voice message sent!', data.success ? 'success' : 'error');
-            } catch (err) {
-                showToast('Error: ' + err.message, 'error');
-            }
-        }
-
-        async function sendTestGirlfriend() {
-            try {
-                const mediaUrl = document.getElementById('test-media-url').value;
-                const body = mediaUrl ? { mediaUrl } : {};
-                const res = await apiCall('/test/send-test-girlfriend', { method: 'POST', body });
-                const data = await res.json();
-                showToast(data.message || 'Test message sent!', data.success ? 'success' : 'error');
-            } catch (err) {
-                showToast('Error: ' + err.message, 'error');
-            }
-        }
-
-        async function fetchRandomGif() {
-            try {
-                const res = await fetch('https://api.giphy.com/v1/gifs/random?api_key=0UTRbFtkMxAplrohufYco5IY74U8hOes&tag=love&rating=pg');
-                const data = await res.json();
-                if (data.data && data.data.images) {
-                    document.getElementById('test-media-url').value = data.data.images.original.url;
-                }
-            } catch (err) {
-                showToast('Failed to fetch GIF', 'error');
-            }
-        }
-
-        function updateMediaPreview() {}
-
-        // Templates
-        let templates = [];
-
-        async function loadTemplates() {
-            try {
-                const res = await apiCall('/api/dashboard/templates');
-                const data = await res.json();
-                templates = data.templates || [];
-                renderTemplates();
-            } catch (err) {
-                console.error('Failed to load templates:', err);
-            }
-        }
-
-        function renderTemplates() {
-            const list = document.getElementById('templates-list');
-            list.innerHTML = templates.map((t, i) => `
-                <div class="question-item">
-                    <textarea onchange="templates[${i}] = this.value">${t}</textarea>
-                    <button onclick="templates.splice(${i}, 1); renderTemplates();" class="btn-sm secondary outline">Remove</button>
-                </div>
-            `).join('');
-        }
-
-        function addTemplate() {
-            templates.push('Good morning my love! {loveNote} {gratitude} {encouragement}');
-            renderTemplates();
-        }
-
-        async function saveTemplates() {
-            try {
-                const res = await apiCall('/api/dashboard/templates', {
-                    method: 'POST',
-                    body: { templates }
-                });
-                const data = await res.json();
-                if (data.success) showToast('Templates saved!', 'success');
-                else showToast('Failed to save templates', 'error');
-            } catch (err) {
-                showToast('Error: ' + err.message, 'error');
-            }
-        }
-
-        // History
-        async function loadHistory() {
-            try {
-                const res = await apiCall('/api/dashboard/history');
-                const data = await res.json();
-                const list = document.getElementById('history-list');
-                if (!data.history || data.history.length === 0) {
-                    list.innerHTML = '<p>No message history yet.</p>';
-                    return;
-                }
-                list.innerHTML = data.history.map(entry => `
-                    <div class="history-entry">
-                        <div class="history-header">
-                            <span class="history-type ${entry.type}">${entry.type}</span>
-                            <span class="history-status">${new Date(entry.timestamp).toLocaleString()}</span>
-                        </div>
-                        <div class="history-message">${entry.message || ''}</div>
-                    </div>
-                `).join('');
-            } catch (err) {
-                console.error('Failed to load history:', err);
-            }
-        }
-
-        // Toast notifications
-        function showToast(message, type = 'success') {
-            const toast = document.createElement('div');
-            toast.className = 'toast ' + type;
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
-        // Auto-login check
-        if (sessionToken) {
-            showDashboard();
-        }
+        async function sendQuestions() { try { var res = await apiCall('/test/send-questions', { method: 'POST' }); var data = await res.json(); showToast(data.message || 'Sent!', data.success ? 'success' : 'error'); } catch (err) { showToast('Error: ' + err.message, 'error'); } }
+        async function sendVoiceMessage() { try { var res = await apiCall('/test/send-voice', { method: 'POST' }); var data = await res.json(); showToast(data.message || 'Sent!', data.success ? 'success' : 'error'); } catch (err) { showToast('Error: ' + err.message, 'error'); } }
+        async function sendTestGirlfriend() { try { var mu = document.getElementById('test-media-url').value; var body = mu ? { mediaUrl: mu } : {}; var res = await apiCall('/test/send-test-girlfriend', { method: 'POST', body: body }); var data = await res.json(); showToast(data.message || 'Sent!', data.success ? 'success' : 'error'); } catch (err) { showToast('Error: ' + err.message, 'error'); } }
+        async function fetchRandomGif() { try { var res = await fetch('https://api.giphy.com/v1/gifs/random?api_key=0UTRbFtkMxAplrohufYco5IY74U8hOes&tag=love&rating=pg'); var data = await res.json(); if (data.data && data.data.images) { document.getElementById('test-media-url').value = data.data.images.original.url; } } catch (err) { showToast('GIF fetch failed', 'error'); } }
+        var templates = [];
+        async function loadTemplates() { try { var res = await apiCall('/api/dashboard/templates'); var data = await res.json(); templates = data.templates || []; renderTemplates(); } catch (err) { console.error('Failed:', err); } }
+        function renderTemplates() { var list = document.getElementById('templates-list'); list.innerHTML = templates.map(function(t, i) { return '<div class="question-item"><textarea onchange="templates[' + i + '] = this.value">' + t + '</textarea><button onclick="templates.splice(' + i + ', 1); renderTemplates();" class="btn-sm secondary outline">Remove</button></div>'; }).join(''); }
+        function addTemplate() { templates.push('Good morning my love! {loveNote} {gratitude} {encouragement}'); renderTemplates(); }
+        async function saveTemplates() { try { var res = await apiCall('/api/dashboard/templates', { method: 'POST', body: { templates: templates } }); var data = await res.json(); if (data.success) showToast('Saved!', 'success'); else showToast('Failed', 'error'); } catch (err) { showToast('Error: ' + err.message, 'error'); } }
+        async function loadHistory() { try { var res = await apiCall('/api/dashboard/history'); var data = await res.json(); var list = document.getElementById('history-list'); if (!data.history || data.history.length === 0) { list.innerHTML = '<p>No history yet.</p>'; return; } list.innerHTML = data.history.map(function(e) { return '<div class="history-entry"><div class="history-header"><span class="history-type ' + e.type + '">' + e.type + '</span><span class="history-status">' + new Date(e.timestamp).toLocaleString() + '</span></div><div class="history-message">' + (e.message || '') + '</div></div>'; }).join(''); } catch (err) { console.error('History failed:', err); } }
+        function showToast(message, type) { type = type || 'success'; var toast = document.createElement('div'); toast.className = 'toast ' + type; toast.textContent = message; document.body.appendChild(toast); setTimeout(function() { toast.remove(); }, 3000); }
+        if (sessionToken) { showDashboard(); }
     </script>
 </body>
 </html>
