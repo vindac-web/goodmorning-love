@@ -69,8 +69,8 @@
         .template-preview { padding: 1rem; background: var(--code-background-color); border-radius: 0.5rem; margin-top: 0.5rem; white-space: pre-wrap; font-family: monospace; font-size: 0.875rem; }
         .loading { opacity: 0.6; pointer-events: none; }
         .hidden { display: none; }
-        header { margin-bottom: 2rem; }
-        header h1 { margin-bottom: 0.5rem; }
+        .dashboard-header { margin-bottom: 0; overflow: hidden; }
+        .dashboard-header h1 { margin-bottom: 0.5rem; }
         .logout-btn { float: right; position: relative; z-index: 100; }
     </style>
 </head>
@@ -87,10 +87,10 @@
         </article>
     </div>
     <div id="dashboard" class="container hidden">
-        <header>
+        <div class="dashboard-header">
             <h1>Good Morning Love Dashboard 💕</h1>
             <button class="logout-btn" onclick="logout()">Logout</button>
-        </header>
+        </div><!-- end dashboard-header -->
         <style>.nav-tabs,.nav-tabs *{all:unset!important}.nav-tabs{display:flex!important;gap:0!important;margin-bottom:2rem!important;border-bottom:2px solid #ccc!important;padding:0!important}.nav-tabs .nav-tab{display:inline-block!important;padding:12px 20px!important;cursor:pointer!important;color:#555!important;font-size:16px!important;font-weight:500!important;font-family:system-ui,sans-serif!important;border-bottom:3px solid transparent!important;margin-bottom:-2px!important}.nav-tabs .nav-tab:hover{color:#d63384!important}.nav-tabs .nav-tab.active{color:#d63384!important;font-weight:600!important;border-bottom-color:#d63384!important}</style>
 <div class="nav-tabs">
             <span class="nav-tab active" onclick="switchTab(event, 'status')" style="color:#555;text-decoration:none;padding:0.75rem 1.25rem;border-bottom:3px solid #d63384;margin-bottom:-2px;">Status</span>
