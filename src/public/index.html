@@ -71,7 +71,7 @@
         .hidden { display: none; }
         header { margin-bottom: 2rem; }
         header h1 { margin-bottom: 0.5rem; }
-        .logout-btn { float: right; }
+        .logout-btn { float: right; position: relative; z-index: 100; }
     </style>
 </head>
 <body>
@@ -191,7 +191,7 @@
             loadStatus(); loadQuestions();
         }
         function logout() {
-            localStorage.removeItem('dashboard_session'); sessionToken = null;
+            fetch('/api/dashboard/logout', {method:'POST'}); localStorage.removeItem('dashboard_session'); sessionToken = null;
             document.getElementById('login-page').classList.remove('hidden');
             document.getElementById('dashboard').classList.add('hidden');
         }
@@ -203,7 +203,7 @@
                 headers['Content-Type'] = 'application/json';
                 options.body = JSON.stringify(options.body);
             }
-            return fetch(url, Object.assign({}, options, { headers: headers }));
+            var resp = await fetch(url, Object.assign({}, options, { headers: headers })); if (resp.status === 401) { logout(); return resp; } return resp;
         }
         async function loadStatus() {
             try {
