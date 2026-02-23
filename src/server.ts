@@ -1,6 +1,8 @@
 import express, { Express, Request, Response } from 'express';
 import session from 'express-session';
 import path from 'path';
+import Database from 'better-sqlite3';
+import SqliteStoreFactory from 'better-sqlite3-session-store';
 import webhookRouter from './routes/webhook';
 import dashboardRouter from './routes/dashboard';
 import twimlRouter from './routes/twiml';
@@ -12,6 +14,8 @@ import {
 import { AnswerSet } from './utils/parseAnswers';
 import { ensureDataDir } from './services/dataStore';
 
+const SqliteStore = SqliteStoreFactory(session);
+
 export function createServer(): Express {
   const app = express();
 
@@ -21,9 +25,19 @@ export function createServer(): Express {
   // Trust proxy for Railway deployment
   app.set('trust proxy', 1);
 
+  // SQLite-backed session store for persistence across deployments
+  const sessionDb = new Database(path.join(process.cwd(), 'data', 'sessions.db'));
+
   // Session middleware for dashboard authentication
   app.use(
     session({
+      store: new SqliteStore({
+        client: sessionDb,
+        expired: {
+          clear: true,
+          intervalMs: 900000, // Clear expired sessions every 15 minutes
+        },
+      }),
       secret: process.env.SESSION_SECRET || 'default-secret-change-me',
       resave: false,
       saveUninitialized: false,
