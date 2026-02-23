@@ -1,5 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import session from 'express-session';
+import Database from 'better-sqlite3';
 import path from 'path';
 import webhookRouter from './routes/webhook';
 import dashboardRouter from './routes/dashboard';
@@ -11,6 +12,21 @@ import {
 } from './services/goodMorningService';
 import { AnswerSet } from './utils/parseAnswers';
 import { ensureDataDir } from './services/dataStore';
+
+// Create SQLite session store
+function createSessionStore() {
+  const SqliteStore = require('better-sqlite3-session-store')(session);
+  const dataDir = process.env.DATA_DIR || '/app/data';
+  const dbPath = path.join(dataDir, 'sessions.db');
+  const db = new Database(dbPath);
+  return new SqliteStore({
+    client: db,
+    expired: {
+      clear: true,
+      intervalMs: 900000, // 15 minutes
+    },
+  });
+}
 
 export function createServer(): Express {
   const app = express();
@@ -24,6 +40,7 @@ export function createServer(): Express {
   // Session middleware for dashboard authentication
   app.use(
     session({
+      store: createSessionStore(),
       secret: process.env.SESSION_SECRET || 'default-secret-change-me',
       resave: false,
       saveUninitialized: false,
