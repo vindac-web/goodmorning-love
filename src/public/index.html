@@ -209,16 +209,16 @@
             try {
                 var res = await apiCall('/api/dashboard/status');
                 var data = await res.json();
-                document.getElementById('morning-time-display').textContent = data.morningTime || '--:--';
-                document.getElementById('girlfriend-time-display').textContent = data.girlfriendTime || '--:--';
-                document.getElementById('timezone-display').textContent = data.timezone || '---';
-                if (data.myNumber) document.getElementById('my-number').textContent = data.myNumber;
-                if (data.girlfriendNumber) document.getElementById('gf-number').textContent = data.girlfriendNumber;
-                if (data.myChannels) document.getElementById('my-channels').textContent = data.myChannels;
-                if (data.girlfriendChannels) document.getElementById('gf-channels').textContent = data.girlfriendChannels;
-                if (data.morningTime) document.getElementById('morning-time').value = data.morningTime;
-                if (data.girlfriendTime) document.getElementById('girlfriend-time').value = data.girlfriendTime;
-                if (data.timezone) document.getElementById('timezone').value = data.timezone;
+                document.getElementById('morning-time-display').textContent = data.schedule.morningTime || '--:--';
+                document.getElementById('girlfriend-time-display').textContent = data.schedule.girlfriendSendTime || '--:--';
+                document.getElementById('timezone-display').textContent = data.schedule.timezone || '---';
+                if (data.phoneNumbers.my) document.getElementById('my-number').textContent = data.phoneNumbers.my;
+                if (data.phoneNumbers.girlfriend) document.getElementById('gf-number').textContent = data.phoneNumbers.girlfriend;
+                if (data.channels.my) document.getElementById('my-channels').textContent = data.channels.my;
+                if (data.channels.girlfriend) document.getElementById('gf-channels').textContent = data.channels.girlfriend;
+                if (data.schedule.morningTime) document.getElementById('morning-time').value = data.schedule.morningTime;
+                if (data.schedule.girlfriendSendTime) document.getElementById('girlfriend-time').value = data.schedule.girlfriendSendTime;
+                if (data.schedule.timezone) document.getElementById('timezone').value = data.schedule.timezone;
             } catch (err) { console.error('Failed to load status:', err); }
         }
         var questions = [];
@@ -233,23 +233,23 @@
         function addQuestion() { questions.push('New question?'); renderQuestions(); }
         function removeQuestion(index) { questions.splice(index, 1); renderQuestions(); }
         async function saveQuestions() {
-            try { var res = await apiCall('/api/dashboard/questions', { method: 'POST', body: { questions: questions } }); var data = await res.json(); if (data.success) showToast('Questions saved!', 'success'); else showToast('Failed', 'error'); }
+            try { var res = await apiCall('/api/dashboard/questions', { method: 'PUT', body: { questions: questions } }); var data = await res.json(); if (data.success) showToast('Questions saved!', 'success'); else showToast('Failed', 'error'); }
             catch (err) { showToast('Error: ' + err.message, 'error'); }
         }
         async function saveSchedule(e) {
             e.preventDefault();
-            try { var res = await apiCall('/api/dashboard/schedule', { method: 'POST', body: { morningTime: document.getElementById('morning-time').value, girlfriendTime: document.getElementById('girlfriend-time').value, timezone: document.getElementById('timezone').value } }); var data = await res.json(); if (data.success) showToast('Schedule saved!', 'success'); else showToast('Failed', 'error'); }
+            try { var res = await apiCall('/api/dashboard/settings', { method: 'PUT', body: { morningTime: document.getElementById('morning-time').value, girlfriendSendTime: document.getElementById('girlfriend-time').value, timezone: document.getElementById('timezone').value } }); var data = await res.json(); if (data.success) showToast('Schedule saved!', 'success'); else showToast('Failed', 'error'); }
             catch (err) { showToast('Error: ' + err.message, 'error'); }
         }
         async function sendQuestions() { try { var res = await apiCall('/test/send-questions', { method: 'POST' }); var data = await res.json(); showToast(data.message || 'Sent!', data.success ? 'success' : 'error'); } catch (err) { showToast('Error: ' + err.message, 'error'); } }
         async function sendVoiceMessage() { try { var res = await apiCall('/test/send-voice', { method: 'POST' }); var data = await res.json(); showToast(data.message || 'Sent!', data.success ? 'success' : 'error'); } catch (err) { showToast('Error: ' + err.message, 'error'); } }
-        async function sendTestGirlfriend() { try { var mu = document.getElementById('test-media-url').value; var body = mu ? { mediaUrl: mu } : {}; var res = await apiCall('/test/send-test-girlfriend', { method: 'POST', body: body }); var data = await res.json(); showToast(data.message || 'Sent!', data.success ? 'success' : 'error'); } catch (err) { showToast('Error: ' + err.message, 'error'); } }
+        async function sendTestGirlfriend() { try { var mu = document.getElementById('test-media-url').value; var body = mu ? { mediaUrl: mu } : {}; var res = await apiCall('/test/send-test-girlfriend', { method: 'PUT', body: body }); var data = await res.json(); showToast(data.message || 'Sent!', data.success ? 'success' : 'error'); } catch (err) { showToast('Error: ' + err.message, 'error'); } }
         async function fetchRandomGif() { try { var res = await fetch('https://api.giphy.com/v1/gifs/random?api_key=0UTRbFtkMxAplrohufYco5IY74U8hOes&tag=love&rating=pg'); var data = await res.json(); if (data.data && data.data.images) { document.getElementById('test-media-url').value = data.data.images.original.url; } } catch (err) { showToast('GIF fetch failed', 'error'); } }
         var templates = [];
         async function loadTemplates() { try { var res = await apiCall('/api/dashboard/templates'); var data = await res.json(); templates = data.templates || []; renderTemplates(); } catch (err) { console.error('Failed:', err); } }
         function renderTemplates() { var list = document.getElementById('templates-list'); list.innerHTML = templates.map(function(t, i) { return '<div class="question-item"><textarea onchange="templates[' + i + '] = this.value">' + t + '</textarea><button onclick="templates.splice(' + i + ', 1); renderTemplates();" class="btn-sm secondary outline">Remove</button></div>'; }).join(''); }
         function addTemplate() { templates.push('Good morning my love! {loveNote} {gratitude} {encouragement}'); renderTemplates(); }
-        async function saveTemplates() { try { var res = await apiCall('/api/dashboard/templates', { method: 'POST', body: { templates: templates } }); var data = await res.json(); if (data.success) showToast('Saved!', 'success'); else showToast('Failed', 'error'); } catch (err) { showToast('Error: ' + err.message, 'error'); } }
+        async function saveTemplates() { try { var res = await apiCall('/api/dashboard/templates', { method: 'PUT', body: { templates: templates } }); var data = await res.json(); if (data.success) showToast('Saved!', 'success'); else showToast('Failed', 'error'); } catch (err) { showToast('Error: ' + err.message, 'error'); } }
         async function loadHistory() { try { var res = await apiCall('/api/dashboard/history'); var data = await res.json(); var list = document.getElementById('history-list'); if (!data.history || data.history.length === 0) { list.innerHTML = '<p>No history yet.</p>'; return; } list.innerHTML = data.history.map(function(e) { return '<div class="history-entry"><div class="history-header"><span class="history-type ' + e.type + '">' + e.type + '</span><span class="history-status">' + new Date(e.timestamp).toLocaleString() + '</span></div><div class="history-message">' + (e.message || '') + '</div></div>'; }).join(''); } catch (err) { console.error('History failed:', err); } }
         function showToast(message, type) { type = type || 'success'; var toast = document.createElement('div'); toast.className = 'toast ' + type; toast.textContent = message; document.body.appendChild(toast); setTimeout(function() { toast.remove(); }, 3000); }
         if (sessionToken) { showDashboard(); }
